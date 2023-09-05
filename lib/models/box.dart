@@ -29,6 +29,14 @@ class Box {
     };
   }
 
+  Box.fromMap(Map<String, Object?> map)
+      : id = map['id'] as int,
+        name = map['name'] as String,
+        code = map['code'] as String,
+        location = map['location'] as Location,
+        type = BoxTypes.values[map['type_id'] as int],
+        description = map['description'] as String?;
+
   @override
   String toString() {
     return 'Box{id: $id, name: $name, code: $code, location: $location, type: $type, description: $description}';

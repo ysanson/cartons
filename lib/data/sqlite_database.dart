@@ -1,13 +1,12 @@
 import 'dart:async';
 
+import 'package:cartons/data/repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class SqLiteDatabase {
-  final Database _database;
-
-  SqLiteDatabase({required Database database}) : _database = database;
+class SqLiteDatabase implements Repository {
+  late Database _database;
 
   static Future _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
@@ -32,17 +31,43 @@ class SqLiteDatabase {
     return database;
   }
 
-  static Future<SqLiteDatabase> init() async {
-    final database = await _createDatabase();
-    return SqLiteDatabase(database: database);
+  @override
+  Future<void> init() async {
+    _database = await _createDatabase();
   }
 
+  @override
   Future<void> close() async {
     await _database.close();
   }
 
+  @override
   Future<void> insert(String table, Map<String, Object?> data) async {
     await _database.insert(table, data,
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  @override
+  Future<void> update(String table, Map<String, Object?> data) async {
+    await _database.update(table, data,
+        where: 'id = ?',
+        whereArgs: [data['id']],
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  @override
+  Future<void> delete(String table, int id) async {
+    await _database.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  @override
+  Future<List<Map<String, Object?>>> query(
+    String table, {
+    String? where,
+    List<Object?>? whereArgs,
+    int? limit,
+  }) {
+    return _database.query(table,
+        where: where, whereArgs: whereArgs, limit: limit);
   }
 }
