@@ -25,9 +25,15 @@ class Item {
     };
   }
 
+  Item.fromMap(Map<String, Object?> map)
+      : id = map['id'] as int,
+        name = map['name'] as String,
+        description = map['description'] as String,
+        box = map['box'] as Box,
+        image = map['image'] as String?;
+
   @override
   String toString() {
     return 'Item{id: $id, name: $name, description: $description, box: $box, image: $image}';
   }
-
 }
