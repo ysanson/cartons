@@ -1,5 +1,5 @@
 import 'package:cartons/data/database_provider.dart';
-import 'package:cartons/data/repositories/box_repository.dart';
+import 'package:cartons/repositories/box_repository.dart';
 import 'package:cartons/models/item.dart';
 import 'package:cartons/utils/wait_concurrently.dart';
 

@@ -1,6 +1,6 @@
 import 'package:cartons/models/location.dart';
 
-import '../database_provider.dart';
+import '../data/database_provider.dart';
 
 class LocationRepository {
   static final LocationRepository _locationRepository =
