@@ -36,6 +36,8 @@ void main() async {
   if (isDesktop) {
     await flutter_acrylic.Window.initialize();
     await flutter_acrylic.Window.hideWindowControls();
+    await flutter_acrylic.Window.setEffect(
+        effect: flutter_acrylic.WindowEffect.mica);
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setTitleBarStyle(
@@ -53,6 +55,23 @@ void main() async {
 
 final _appState = AppState();
 
+AccentColor get systemAccentColor {
+  if ((defaultTargetPlatform == TargetPlatform.windows ||
+          defaultTargetPlatform == TargetPlatform.android) &&
+      !kIsWeb) {
+    return AccentColor.swatch({
+      'darkest': SystemTheme.accentColor.darkest,
+      'darker': SystemTheme.accentColor.darker,
+      'dark': SystemTheme.accentColor.dark,
+      'normal': SystemTheme.accentColor.accent,
+      'light': SystemTheme.accentColor.light,
+      'lighter': SystemTheme.accentColor.lighter,
+      'lightest': SystemTheme.accentColor.lightest,
+    });
+  }
+  return Colors.blue;
+}
+
 class RootComponent extends StatelessWidget {
   const RootComponent({super.key});
 
@@ -61,22 +80,21 @@ class RootComponent extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: _appState,
       builder: (context, child) {
-        final appState = context.watch<AppState>();
         return FluentApp.router(
           title: appTitle,
           themeMode: ThemeMode.system,
           debugShowCheckedModeBanner: false,
-          color: appState.color,
+          color: systemAccentColor,
           darkTheme: FluentThemeData(
             brightness: Brightness.dark,
-            accentColor: appState.color,
+            accentColor: systemAccentColor,
             visualDensity: VisualDensity.standard,
             focusTheme: FocusThemeData(
               glowFactor: is10footScreen(context) ? 2.0 : 0.0,
             ),
           ),
           theme: FluentThemeData(
-            accentColor: appState.color,
+            accentColor: systemAccentColor,
             visualDensity: VisualDensity.standard,
             focusTheme: FocusThemeData(
               glowFactor: is10footScreen(context) ? 2.0 : 0.0,
@@ -85,11 +103,8 @@ class RootComponent extends StatelessWidget {
           locale: null,
           builder: (context, child) {
             return NavigationPaneTheme(
-              data: NavigationPaneThemeData(
-                backgroundColor: FluentTheme.of(context)
-                    .acrylicBackgroundColor
-                    .withOpacity(0.65),
-              ),
+              data: const NavigationPaneThemeData(
+                  backgroundColor: Colors.transparent),
               child: child!,
             );
           },
@@ -228,7 +243,6 @@ class _LayoutState extends State<Layout> with WindowListener {
   Widget build(BuildContext context) {
     final localizations = FluentLocalizations.of(context);
 
-    final appState = context.watch<AppState>();
     final theme = FluentTheme.of(context);
     if (widget.shellContext != null) {
       if (router.canPop() == false) {
@@ -238,6 +252,7 @@ class _LayoutState extends State<Layout> with WindowListener {
     return NavigationView(
       key: viewKey,
       appBar: NavigationAppBar(
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: () {
           final enabled = widget.shellContext != null && router.canPop();
@@ -252,9 +267,6 @@ class _LayoutState extends State<Layout> with WindowListener {
               : null;
           return NavigationPaneTheme(
             data: NavigationPaneTheme.of(context).merge(NavigationPaneThemeData(
-              backgroundColor: FluentTheme.of(context)
-                  .acrylicBackgroundColor
-                  .withOpacity(0.65),
               unselectedIconColor: ButtonState.resolveWith((states) {
                 if (states.isDisabled) {
                   return ButtonThemeData.buttonColor(context, states);
@@ -312,7 +324,7 @@ class _LayoutState extends State<Layout> with WindowListener {
           height: kOneLineTileHeight,
           child: ShaderMask(
             shaderCallback: (rect) {
-              final color = appState.color.defaultBrushFor(
+              final color = systemAccentColor.defaultBrushFor(
                 theme.brightness,
               );
               return LinearGradient(
@@ -341,7 +353,7 @@ class _LayoutState extends State<Layout> with WindowListener {
 
   @override
   void onWindowClose() async {
-    Navigator.pop(context);
+    // Navigator.pop(context);
     windowManager.destroy();
   }
 }
