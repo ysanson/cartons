@@ -25,7 +25,7 @@ class Box {
       'code': code,
       'location_id': location.id,
       'type_id': type.index,
-      'description': description,
+      'description': description ?? '',
     };
   }
 

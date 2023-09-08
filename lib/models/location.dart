@@ -24,8 +24,8 @@ class Location {
       'address': address,
       'city': city,
       'country': country,
-      'description': description,
-      'image': image,
+      'description': description ?? '',
+      'image': image ?? '',
     };
   }
 

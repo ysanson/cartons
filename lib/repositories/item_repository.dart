@@ -37,6 +37,12 @@ class ItemRepository {
     return Item.fromMap(map);
   }
 
+  Future<List<Item>> getUnsortedItems() async {
+    final db = await DatabaseProvider().database;
+    final itemMaps = await db.query('items', where: "box_id = ''");
+    return itemMaps.map((map) => Item.fromMap(map)).toList();
+  }
+
   Future<void> insertItem(Item item) {
     final db = DatabaseProvider().database;
     return db.then((database) {

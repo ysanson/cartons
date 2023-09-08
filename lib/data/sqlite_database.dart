@@ -16,9 +16,9 @@ class SqLiteDatabase implements Repository {
     await db.execute(
         'CREATE TABLE locations(id INTEGER PRIMARY KEY, name TEXT, description TEXT)');
     await db.execute(
-        'CREATE TABLE boxes(id INTEGER PRIMARY KEY, name TEXT, code TEXT, location_id INTEGER, type_id INTEGER, description TEXT) FOREIGN KEY(location_id) REFERENCES locations(id) ON DELETE CASCADE');
+        'CREATE TABLE boxes(id INTEGER PRIMARY KEY, name TEXT, code TEXT, location_id INTEGER, type_id INTEGER, description TEXT, FOREIGN KEY(location_id) REFERENCES locations(id) ON DELETE CASCADE)');
     await db.execute(
-        'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT, description TEXT, box_id INTEGER, image TEXT) FOREIGN KEY(box_id) REFERENCES boxes(id) ON DELETE CASCADE');
+        'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT, description TEXT, box_id INTEGER, image TEXT, FOREIGN KEY(box_id) REFERENCES boxes(id) ON DELETE CASCADE)');
   }
 
   static Future<Database> _createDatabase() async {
@@ -27,6 +27,7 @@ class SqLiteDatabase implements Repository {
       join(await getDatabasesPath(), 'inventory.db'),
       onConfigure: _onConfigure,
       onCreate: _onCreate,
+      version: 1,
     );
     return database;
   }

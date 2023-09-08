@@ -3,6 +3,7 @@ import 'package:cartons/state.dart';
 import 'package:cartons/widgets/window_buttons.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:window_manager/window_manager.dart';
@@ -48,6 +49,9 @@ void main() async {
       await windowManager.setSkipTaskbar(false);
     });
   }
+
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   runApp(const RootComponent());
 }
 
@@ -145,7 +149,7 @@ class _LayoutState extends State<Layout> with WindowListener {
       title: const Text('Home'),
       body: const SizedBox.shrink(),
     ),
-    PaneItemHeader(header: const Text('Inputs')),
+    PaneItemHeader(header: const Text('Tables')),
     PaneItem(
       key: const ValueKey('/locations'),
       icon: const Icon(FluentIcons.hotel),

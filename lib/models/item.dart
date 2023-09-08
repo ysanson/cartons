@@ -20,8 +20,8 @@ class Item {
       'id': id,
       'name': name,
       'description': description,
-      'box_id': box?.id,
-      'image': image,
+      'box_id': box?.id ?? '',
+      'image': image ?? '',
     };
   }
 
