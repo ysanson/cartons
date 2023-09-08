@@ -4,14 +4,14 @@ class Item {
   final int id;
   final String name;
   final String description;
-  final Box box;
+  final Box? box;
   final String? image;
 
   const Item({
     required this.id,
     required this.name,
     required this.description,
-    required this.box,
+    this.box,
     this.image,
   });
 
@@ -20,7 +20,7 @@ class Item {
       'id': id,
       'name': name,
       'description': description,
-      'box_id': box.id,
+      'box_id': box?.id,
       'image': image,
     };
   }
@@ -29,7 +29,7 @@ class Item {
       : id = map['id'] as int,
         name = map['name'] as String,
         description = map['description'] as String,
-        box = map['box'] as Box,
+        box = map.containsKey('box') ? map['box'] as Box : null,
         image = map['image'] as String?;
 
   @override

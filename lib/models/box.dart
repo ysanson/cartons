@@ -37,6 +37,14 @@ class Box {
         type = BoxTypes.values[map['type_id'] as int],
         description = map['description'] as String?;
 
+  Box.empty()
+      : id = 0,
+        name = '',
+        code = '',
+        location = Location.empty(),
+        type = BoxTypes.books,
+        description = '';
+
   @override
   String toString() {
     return 'Box{id: $id, name: $name, code: $code, location: $location, type: $type, description: $description}';

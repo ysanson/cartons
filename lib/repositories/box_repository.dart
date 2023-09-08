@@ -1,6 +1,6 @@
 import 'package:cartons/data/database_provider.dart';
 import 'package:cartons/repositories/location_repository.dart';
-import 'package:cartons/models/Box.dart';
+import 'package:cartons/models/box.dart';
 import 'package:cartons/utils/wait_concurrently.dart';
 
 class BoxRepository {
@@ -26,6 +26,9 @@ class BoxRepository {
   Future<Box> getBox(int id) async {
     final db = await DatabaseProvider().database;
     final boxMaps = await db.query('boxes', where: 'id = ?', whereArgs: [id]);
+    if (boxMaps.isEmpty) {
+      return Box.empty();
+    }
     final map = boxMaps.first;
     final location =
         await LocationRepository().getLocation(map['location_id'] as int);

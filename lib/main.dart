@@ -36,8 +36,6 @@ void main() async {
   if (isDesktop) {
     await flutter_acrylic.Window.initialize();
     await flutter_acrylic.Window.hideWindowControls();
-    await flutter_acrylic.Window.setEffect(
-        effect: flutter_acrylic.WindowEffect.mica);
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setTitleBarStyle(
@@ -103,8 +101,7 @@ class RootComponent extends StatelessWidget {
           locale: null,
           builder: (context, child) {
             return NavigationPaneTheme(
-              data: const NavigationPaneThemeData(
-                  backgroundColor: Colors.transparent),
+              data: const NavigationPaneThemeData(backgroundColor: null),
               child: child!,
             );
           },
@@ -252,7 +249,6 @@ class _LayoutState extends State<Layout> with WindowListener {
     return NavigationView(
       key: viewKey,
       appBar: NavigationAppBar(
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: () {
           final enabled = widget.shellContext != null && router.canPop();

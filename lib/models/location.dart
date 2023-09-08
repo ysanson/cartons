@@ -38,6 +38,15 @@ class Location {
         description = map['description'] as String?,
         image = map['image'] as String?;
 
+  Location.empty()
+      : id = 0,
+        name = '',
+        address = '',
+        city = '',
+        country = '',
+        description = '',
+        image = '';
+
   @override
   String toString() {
     return 'Location{id: $id, name: $name, address: $address, city: $city, country: $country, description: $description, image: $image}';
