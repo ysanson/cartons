@@ -1,5 +1,6 @@
 import 'package:cartons/models/item.dart';
 import 'package:cartons/state.dart';
+import 'package:cartons/widgets/add_item.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
@@ -59,21 +60,35 @@ class _HomePageState extends State<HomePage> with PageMixin {
         } else {
           return ScaffoldPage.withPadding(
             header: const PageHeader(title: Text('Cartons')),
-            content: Row(
+            content: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               verticalDirection: VerticalDirection.down,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('You have no items that need filtering.  ',
-                    style: typography.subtitle?.apply(fontSizeFactor: scale)),
-                FilledButton(
-                  onPressed: () {
-                    setState(() {
-                      _isAddingItem = true;
-                    });
-                  },
-                  child: const Text('Add Item'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  verticalDirection: VerticalDirection.down,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('You have no items that need filtering.  ',
+                        style:
+                            typography.subtitle?.apply(fontSizeFactor: scale)),
+                    FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          _isAddingItem = !_isAddingItem;
+                        });
+                      },
+                      child: const Text('Add Item'),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 22.0),
+                AnimatedOpacity(
+                  opacity: _isAddingItem ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 50),
+                  child: const AddItem(),
+                )
               ],
             ),
           );
