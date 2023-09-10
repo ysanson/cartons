@@ -1,14 +1,14 @@
 import 'box.dart';
 
 class Item {
-  final int id;
+  final int? id;
   final String name;
   final String description;
   final Box? box;
   final String? image;
 
   const Item({
-    required this.id,
+    this.id,
     required this.name,
     required this.description,
     this.box,
@@ -20,7 +20,7 @@ class Item {
       'id': id,
       'name': name,
       'description': description,
-      'box_id': box?.id ?? '',
+      'box_id': box?.id,
       'image': image ?? '',
     };
   }

@@ -39,7 +39,7 @@ class ItemRepository {
 
   Future<List<Item>> getUnsortedItems() async {
     final db = await DatabaseProvider().database;
-    final itemMaps = await db.query('items', where: "box_id = ''");
+    final itemMaps = await db.query('items', where: "box_id is null");
     return itemMaps.map((map) => Item.fromMap(map)).toList();
   }
 
@@ -60,7 +60,7 @@ class ItemRepository {
   Future<void> deleteItem(Item item) {
     final db = DatabaseProvider().database;
     return db.then((database) {
-      database.delete('items', item.id);
+      database.delete('items', item.id!);
     });
   }
 }

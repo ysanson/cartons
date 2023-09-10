@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> with PageMixin {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
     Typography typography = FluentTheme.of(context).typography;
     return FutureBuilder<List<Item>>(
       future: _getUnsortedItems,
@@ -45,16 +46,31 @@ class _HomePageState extends State<HomePage> with PageMixin {
             children: [
               const Text('Here is all your items that need filtering:'),
               const SizedBox(height: 22.0),
-              material.DataTable(columns: const [
-                material.DataColumn(label: Text('Item')),
-                material.DataColumn(label: Text('Description')),
-              ], rows: [
-                for (final item in items)
-                  material.DataRow(cells: [
-                    material.DataCell(Text(item.name)),
-                    material.DataCell(Text(item.description)),
-                  ]),
-              ]),
+              Mica(
+                backgroundColor:
+                    theme.resources.layerOnMicaBaseAltFillColorSecondary,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(4.0)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: material.DataTable(columns: const [
+                        material.DataColumn(label: Text('Item')),
+                        material.DataColumn(label: Text('Description')),
+                      ], rows: [
+                        for (final item in items)
+                          material.DataRow(cells: [
+                            material.DataCell(Text(item.name)),
+                            material.DataCell(Text(item.description)),
+                          ]),
+                      ]),
+                    ),
+                  ),
+                ),
+              ),
             ],
           );
         } else {
