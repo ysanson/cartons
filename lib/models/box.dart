@@ -25,7 +25,7 @@ class Box {
       'code': code,
       'location_id': location.id,
       'type_id': type.index,
-      'description': description,
+      'description': description ?? '',
     };
   }
 
@@ -36,6 +36,14 @@ class Box {
         location = map['location'] as Location,
         type = BoxTypes.values[map['type_id'] as int],
         description = map['description'] as String?;
+
+  Box.empty()
+      : id = 0,
+        name = '',
+        code = '',
+        location = Location.empty(),
+        type = BoxTypes.books,
+        description = '';
 
   @override
   String toString() {

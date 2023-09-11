@@ -1,5 +1,6 @@
 import 'package:cartons/data/database_provider.dart';
-import 'package:cartons/data/repositories/box_repository.dart';
+import 'package:cartons/models/box.dart';
+import 'package:cartons/repositories/box_repository.dart';
 import 'package:cartons/models/item.dart';
 import 'package:cartons/utils/wait_concurrently.dart';
 
@@ -16,8 +17,11 @@ class ItemRepository {
     final (items, boxes) =
         await waitConcurrently(db.query('items'), BoxRepository().getBoxes());
     return items.map((map) {
-      final box = boxes.firstWhere((location) => location.id == map['box_id']);
-      map['box'] = box;
+      final box = boxes.firstWhere((bx) => bx.id == map['box_id'],
+          orElse: () => Box.empty());
+      if (box.id != 0) {
+        map['box'] = box;
+      }
       return Item.fromMap(map);
     }).toList();
   }
@@ -27,8 +31,16 @@ class ItemRepository {
     final itemMaps = await db.query('items', where: 'id = ?', whereArgs: [id]);
     final map = itemMaps.first;
     final box = await BoxRepository().getBox(map['box_id'] as int);
-    map['box'] = box;
+    if (box.id != 0) {
+      map['box'] = box;
+    }
     return Item.fromMap(map);
+  }
+
+  Future<List<Item>> getUnsortedItems() async {
+    final db = await DatabaseProvider().database;
+    final itemMaps = await db.query('items', where: "box_id is null");
+    return itemMaps.map((map) => Item.fromMap(map)).toList();
   }
 
   Future<void> insertItem(Item item) {
@@ -48,7 +60,7 @@ class ItemRepository {
   Future<void> deleteItem(Item item) {
     final db = DatabaseProvider().database;
     return db.then((database) {
-      database.delete('items', item.id);
+      database.delete('items', item.id!);
     });
   }
 }

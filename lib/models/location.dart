@@ -24,8 +24,8 @@ class Location {
       'address': address,
       'city': city,
       'country': country,
-      'description': description,
-      'image': image,
+      'description': description ?? '',
+      'image': image ?? '',
     };
   }
 
@@ -37,6 +37,15 @@ class Location {
         country = map['country'] as String,
         description = map['description'] as String?,
         image = map['image'] as String?;
+
+  Location.empty()
+      : id = 0,
+        name = '',
+        address = '',
+        city = '',
+        country = '',
+        description = '',
+        image = '';
 
   @override
   String toString() {
