@@ -1,4 +1,5 @@
 import 'package:cartons/screens/home.dart';
+import 'package:cartons/screens/items.dart';
 import 'package:cartons/state.dart';
 import 'package:cartons/widgets/window_buttons.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -373,6 +374,10 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
         GoRoute(
           path: '/',
           builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: '/items',
+          builder: (context, state) => const ItemsPage(),
         )
       ])
 ]);
