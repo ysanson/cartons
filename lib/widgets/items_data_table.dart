@@ -1,6 +1,8 @@
 import 'package:cartons/models/item.dart';
+import 'package:cartons/state.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:provider/provider.dart';
 
 class ItemsDataTable extends StatefulWidget {
   const ItemsDataTable({
@@ -79,7 +81,34 @@ class _ItemsDataTableState extends State<ItemsDataTable> {
                     ),
                     IconButton(
                       icon: const Icon(FluentIcons.delete),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return ContentDialog(
+                                title: const Text('Confirm deletion'),
+                                content: const Text(
+                                    'Are you sure you want to delete this item?'),
+                                actions: [
+                                  FilledButton(
+                                    child: const Text('Yes'),
+                                    onPressed: () {
+                                      Provider.of<AppState>(context,
+                                              listen: false)
+                                          .deleteItem(item)
+                                          .then((_) => Navigator.pop(context));
+                                    },
+                                  ),
+                                  Button(
+                                    child: const Text('No'),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                            });
+                      },
                     ),
                   ],
                 ),

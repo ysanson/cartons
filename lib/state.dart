@@ -17,4 +17,14 @@ class AppState extends ChangeNotifier {
     await ItemRepository().insertItem(item);
     notifyListeners();
   }
+
+  Future<void> updateItem(Item item) async {
+    await ItemRepository().updateItem(item);
+    notifyListeners();
+  }
+
+  Future<void> deleteItem(Item item) async {
+    await ItemRepository().deleteItem(item);
+    notifyListeners();
+  }
 }
