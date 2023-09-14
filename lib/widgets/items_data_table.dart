@@ -24,21 +24,26 @@ class _ItemsDataTableState extends State<ItemsDataTable> {
 
   @override
   Widget build(BuildContext context) {
-    return Mica(
-      backgroundColor:
-          widget.theme.resources.layerOnMicaBaseAltFillColorSecondary,
+    return material.Material(
+      color: Colors.transparent,
+      type: material.MaterialType.transparency,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(4.0)),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: SizedBox(
-            width: double.infinity,
-            child: material.DataTable(
-                columns: _createColumns(),
-                rows: _createRows(),
-                sortColumnIndex: _currentSortColumn,
-                sortAscending: _isSortAsc),
+      child: Mica(
+        backgroundColor:
+            widget.theme.resources.layerOnMicaBaseAltFillColorSecondary,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(4.0)),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: SizedBox(
+              width: double.infinity,
+              child: material.DataTable(
+                  columns: _createColumns(),
+                  rows: _createRows(),
+                  sortColumnIndex: _currentSortColumn,
+                  sortAscending: _isSortAsc),
+            ),
           ),
         ),
       ),
