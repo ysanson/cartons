@@ -16,7 +16,7 @@ class _ItemsPageState extends State<ItemsPage> with PageMixin {
   late AppState model;
   late Future<List<Item>> _getAllItems;
   double scale = 1.0;
-  bool _isAddingItem = false;
+  final bool _isAddingItem = false;
 
   @override
   void didChangeDependencies() {

@@ -1,5 +1,4 @@
 import 'package:cartons/screens/home.dart';
-import 'package:cartons/screens/items/items.dart';
 import 'package:cartons/state.dart';
 import 'package:cartons/widgets/deferred_widget.dart';
 import 'package:cartons/widgets/window_buttons.dart';
