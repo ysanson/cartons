@@ -21,6 +21,14 @@ class ItemsDataTable extends StatefulWidget {
 class _ItemsDataTableState extends State<ItemsDataTable> {
   int _currentSortColumn = 0;
   bool _isSortAsc = true;
+  int _currentEditId = -1;
+  late List<Item> _items;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = widget.items.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +66,9 @@ class _ItemsDataTableState extends State<ItemsDataTable> {
             setState(() {
               _currentSortColumn = columnIndex;
               if (_isSortAsc) {
-                widget.items.sort((a, b) => a.name.compareTo(b.name));
+                _items.sort((a, b) => a.name.compareTo(b.name));
               } else {
-                widget.items.sort((a, b) => b.name.compareTo(a.name));
+                _items.sort((a, b) => b.name.compareTo(a.name));
               }
               _isSortAsc = !_isSortAsc;
             });
@@ -72,7 +80,7 @@ class _ItemsDataTableState extends State<ItemsDataTable> {
   }
 
   List<material.DataRow> _createRows() {
-    return widget.items
+    return _items
         .map((item) => material.DataRow(cells: [
               material.DataCell(Text(item.name)),
               material.DataCell(Text(item.description)),
@@ -82,7 +90,11 @@ class _ItemsDataTableState extends State<ItemsDataTable> {
                   children: [
                     IconButton(
                       icon: const Icon(FluentIcons.edit),
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          _currentEditId = item.id ?? -1;
+                        });
+                      },
                     ),
                     IconButton(
                       icon: const Icon(FluentIcons.delete),

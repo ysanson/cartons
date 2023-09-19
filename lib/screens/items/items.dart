@@ -1,5 +1,6 @@
 import 'package:cartons/models/item.dart';
 import 'package:cartons/state.dart';
+import 'package:cartons/widgets/add_item.dart';
 import 'package:cartons/widgets/items_data_table.dart';
 import 'package:cartons/widgets/page.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -16,7 +17,6 @@ class _ItemsPageState extends State<ItemsPage> with PageMixin {
   late AppState model;
   late Future<List<Item>> _getAllItems;
   double scale = 1.0;
-  final bool _isAddingItem = false;
 
   @override
   void didChangeDependencies() {
@@ -37,9 +37,20 @@ class _ItemsPageState extends State<ItemsPage> with PageMixin {
               content: const Center(child: ProgressBar()),
             );
           }
-          return ScaffoldPage.scrollable(
+          final items = snapshot.data!;
+          if (items.isNotEmpty) {
+            return ScaffoldPage.scrollable(
+              header: const PageHeader(title: Text('Items')),
+              children: [
+                const AddItem(),
+                const Spacer(),
+                ItemsDataTable(theme: theme, items: items)
+              ],
+            );
+          }
+          return ScaffoldPage.withPadding(
             header: const PageHeader(title: Text('Items')),
-            children: [ItemsDataTable(theme: theme, items: snapshot.data!)],
+            content: const AddItem(),
           );
         });
   }
