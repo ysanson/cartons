@@ -1,5 +1,7 @@
+import 'package:cartons/models/box.dart';
 import 'package:cartons/models/item.dart';
 import 'package:cartons/state.dart';
+import 'package:cartons/utils/wait_concurrently.dart';
 import 'package:cartons/widgets/add_item.dart';
 import 'package:cartons/widgets/items_data_table.dart';
 import 'package:cartons/widgets/page.dart';
@@ -16,6 +18,7 @@ class ItemsPage extends StatefulWidget {
 class _ItemsPageState extends State<ItemsPage> with PageMixin {
   late AppState model;
   late Future<List<Item>> _getAllItems;
+  late Future<List<Box>> _getBoxes;
   double scale = 1.0;
 
   @override
@@ -23,13 +26,14 @@ class _ItemsPageState extends State<ItemsPage> with PageMixin {
     super.didChangeDependencies();
     model = Provider.of<AppState>(context);
     _getAllItems = model.items;
+    _getBoxes = model.boxes;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
-    return FutureBuilder<List<Item>>(
-        future: _getAllItems,
+    return FutureBuilder<(List<Item>, List<Box>)>(
+        future: waitConcurrently(_getAllItems, _getBoxes),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return ScaffoldPage.withPadding(
@@ -37,20 +41,15 @@ class _ItemsPageState extends State<ItemsPage> with PageMixin {
               content: const Center(child: ProgressBar()),
             );
           }
-          final items = snapshot.data!;
-          if (items.isNotEmpty) {
-            return ScaffoldPage.scrollable(
-              header: const PageHeader(title: Text('Items')),
-              children: [
-                const AddItem(),
-                const Spacer(),
-                ItemsDataTable(theme: theme, items: items)
-              ],
-            );
-          }
-          return ScaffoldPage.withPadding(
+          final (items, boxes) = snapshot.data!;
+          return ScaffoldPage.scrollable(
             header: const PageHeader(title: Text('Items')),
-            content: const AddItem(),
+            children: [
+              const AddItem(),
+              const Spacer(),
+              if (items.isNotEmpty)
+                ItemsDataTable(theme: theme, items: items, boxes: boxes)
+            ],
           );
         });
   }
