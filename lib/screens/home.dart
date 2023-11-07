@@ -1,8 +1,10 @@
+import 'package:cartons/models/box.dart';
 import 'package:cartons/models/item.dart';
 import 'package:cartons/state.dart';
+import 'package:cartons/utils/wait_concurrently.dart';
 import 'package:cartons/widgets/add_item.dart';
+import 'package:cartons/widgets/items_data_table.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
 import '../widgets/page.dart';
 
@@ -16,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with PageMixin {
   late AppState model;
   late Future<List<Item>> _getUnsortedItems;
+  late Future<List<Box>> _getBoxes;
   double scale = 1.0;
   bool _isAddingItem = false;
 
@@ -24,14 +27,15 @@ class _HomePageState extends State<HomePage> with PageMixin {
     super.didChangeDependencies();
     model = Provider.of<AppState>(context);
     _getUnsortedItems = model.unsortedItems;
+    _getBoxes = model.boxes;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     Typography typography = FluentTheme.of(context).typography;
-    return FutureBuilder<List<Item>>(
-      future: _getUnsortedItems,
+    return FutureBuilder<(List<Item>, List<Box>)>(
+      future: waitConcurrently(_getUnsortedItems, _getBoxes),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return ScaffoldPage.withPadding(
@@ -39,38 +43,14 @@ class _HomePageState extends State<HomePage> with PageMixin {
             content: const Center(child: ProgressBar()),
           );
         }
-        final items = snapshot.data!;
+        final (items, boxes) = snapshot.data!;
         if (items.isNotEmpty) {
           return ScaffoldPage.scrollable(
             header: const PageHeader(title: Text('Cartons')),
             children: [
               const Text('Here is all your items that need filtering:'),
               const SizedBox(height: 22.0),
-              Mica(
-                backgroundColor:
-                    theme.resources.layerOnMicaBaseAltFillColorSecondary,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(4.0)),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: material.DataTable(columns: const [
-                        material.DataColumn(label: Text('Item')),
-                        material.DataColumn(label: Text('Description')),
-                      ], rows: [
-                        for (final item in items)
-                          material.DataRow(cells: [
-                            material.DataCell(Text(item.name)),
-                            material.DataCell(Text(item.description)),
-                          ]),
-                      ]),
-                    ),
-                  ),
-                ),
-              ),
+              ItemsDataTable(theme: theme, items: items, boxes: boxes),
             ],
           );
         } else {

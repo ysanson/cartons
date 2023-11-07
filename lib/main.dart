@@ -1,5 +1,6 @@
 import 'package:cartons/screens/home.dart';
 import 'package:cartons/state.dart';
+import 'package:cartons/widgets/deferred_widget.dart';
 import 'package:cartons/widgets/window_buttons.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:window_manager/window_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:cartons/routes/items.dart' deferred as items;
 
 const String appTitle = 'Cartons';
 
@@ -53,6 +56,10 @@ void main() async {
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
   runApp(const RootComponent());
+
+  Future.wait([
+    DeferredWidget.preload(items.loadLibrary),
+  ]);
 }
 
 final _appState = AppState();
@@ -163,7 +170,7 @@ class _LayoutState extends State<Layout> with WindowListener {
       body: const SizedBox.shrink(),
     ),
     PaneItem(
-      key: const ValueKey('/items'),
+      key: const ValueKey('/items/all'),
       icon: const Icon(FluentIcons.pentagon),
       title: const Text('Items'),
       body: const SizedBox.shrink(),
@@ -373,6 +380,11 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
         GoRoute(
           path: '/',
           builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
+          path: '/items/all',
+          builder: (context, state) =>
+              DeferredWidget(items.loadLibrary, () => items.ItemsPage()),
         )
       ])
 ]);

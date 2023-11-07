@@ -1,6 +1,8 @@
 import 'dart:collection';
 
+import 'package:cartons/models/box.dart';
 import 'package:cartons/models/item.dart';
+import 'package:cartons/repositories/box_repository.dart';
 import 'package:cartons/repositories/item_repository.dart';
 import 'package:flutter/foundation.dart';
 
@@ -17,4 +19,16 @@ class AppState extends ChangeNotifier {
     await ItemRepository().insertItem(item);
     notifyListeners();
   }
+
+  Future<void> updateItem(Item item) async {
+    await ItemRepository().updateItem(item);
+    notifyListeners();
+  }
+
+  Future<void> deleteItem(Item item) async {
+    await ItemRepository().deleteItem(item);
+    notifyListeners();
+  }
+
+  Future<List<Box>> get boxes async => await BoxRepository().getBoxes();
 }
